@@ -8,7 +8,7 @@ class HKDF
     @info = options[:info]
 
     salt = options[:salt]
-    salt = 0.chr * @digest.digest_length if salt.nil? #or salt.empty?
+    salt = 0.chr * @digest.digest_length if salt.nil? or salt.empty?
 
     @prk = OpenSSL::HMAC.digest(@digest, salt, source)
     @position = 0
