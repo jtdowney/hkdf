@@ -11,5 +11,6 @@ Gem::Specification.new do |s|
   s.test_files    = Dir.glob('spec/**/*')
   s.require_paths = ['lib']
 
+  s.add_dependency 'jruby-openssl' if RUBY_PLATFORM == 'java'
   s.add_development_dependency 'rspec'
 end
