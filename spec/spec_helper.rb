@@ -1,5 +1,10 @@
 require 'hkdf'
 
+RSpec.configure do |config|
+  config.treat_symbols_as_metadata_keys_with_true_values = true
+  config.order = 'random'
+end
+
 def test_vectors
   test_lines = File.readlines('spec/test_vectors.txt').map(&:strip).reject(&:empty?)
 

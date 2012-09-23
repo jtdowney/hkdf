@@ -8,6 +8,26 @@ describe HKDF do
   end
 
   describe 'initialize' do
+    it 'accepts an IO or a string as a source' do
+      output1 = HKDF.new(@source).next_bytes(32)
+      output2 = HKDF.new(StringIO.new(@source)).next_bytes(32)
+      output1.should == output2
+    end
+
+    it 'reads in an IO at a given read size' do
+      io = StringIO.new(@source)
+      io.should_receive(:read).with(1)
+
+      HKDF.new(io, :read_size => 1)
+    end
+
+    it 'reads in the whole IO' do
+      hkdf1 = HKDF.new(@source, :read_size => 1)
+      hkdf2 = HKDF.new(@source)
+
+      hkdf1.next_bytes(32).should == hkdf2.next_bytes(32)
+    end
+
     it 'defaults the algorithm to SHA-256' do
       HKDF.new(@source).algorithm.should == 'SHA256'
     end
@@ -46,15 +66,15 @@ describe HKDF do
 
   describe 'next_bytes' do
     it 'raises an error if requested size is > max_length' do
-      expect { @hkdf.next_bytes(@hkdf.max_length + 1) }.should raise_error(RangeError, /requested \d+ bytes, only \d+ available/)
-      expect { @hkdf.next_bytes(@hkdf.max_length) }.should_not raise_error(RangeError)
+      expect { @hkdf.next_bytes(@hkdf.max_length + 1) }.to raise_error(RangeError, /requested \d+ bytes, only \d+ available/)
+      expect { @hkdf.next_bytes(@hkdf.max_length) }.to_not raise_error(RangeError)
     end
 
     it 'raises an error if requested size + current position is > max_length' do
       expect do
         @hkdf.next_bytes(32)
         @hkdf.next_bytes(@hkdf.max_length - 31)
-      end.should raise_error(RangeError, /requested \d+ bytes, only \d+ available/)
+      end.to raise_error(RangeError, /requested \d+ bytes, only \d+ available/)
     end
 
     it 'advances the stream position' do
@@ -86,8 +106,8 @@ describe HKDF do
     end
 
     it 'raises an error if requested to seek past end of stream' do
-      expect { @hkdf.seek(@hkdf.max_length + 1) }.should raise_error(RangeError, /cannot seek past \d+/)
-      expect { @hkdf.seek(@hkdf.max_length) }.should_not raise_error(RangeError)
+      expect { @hkdf.seek(@hkdf.max_length + 1) }.to raise_error(RangeError, /cannot seek past \d+/)
+      expect { @hkdf.seek(@hkdf.max_length) }.to_not raise_error(RangeError)
     end
   end
 

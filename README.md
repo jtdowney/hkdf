@@ -10,6 +10,14 @@ hkdf.next_bytes(32)
  => "\f#\xF4b\x98\x9B\x7Fw>|/|k\xF4k\xB7\xB9\x11e\xC5\x92\xD1\fH\xFDG\x94vt\xB4\x14\xCE"
 ```
 
+You can also give an IO object as the source. It will be read in as a stream to generate the key. The optional arguement ```:read_size``` can be used to control how many bytes are read from the IO at a time.
+
+```ruby
+hkdf = HKDF.new(File.new('/tmp/filename'), :read_size => 512)
+hkdf.next_bytes(32)
+ => "\f#\xF4b\x98\x9B\x7Fw>|/|k\xF4k\xB7\xB9\x11e\xC5\x92\xD1\fH\xFDG\x94vt\xB4\x14\xCE"
+```
+
 The default algorithm is HMAC-SHA256, you can override this and other defaults by providing an options hash during construction.
 
 ```ruby

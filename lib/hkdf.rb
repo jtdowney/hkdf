@@ -1,16 +1,19 @@
 require 'openssl'
+require 'stringio'
 
 class HKDF
   def initialize(source, options = {})
-    options = {:algorithm => 'SHA256', :info => '', :salt => nil}.merge(options)
+    options = {:algorithm => 'SHA256', :info => '', :salt => nil, :read_size => nil}.merge(options)
+    source = StringIO.new(source) if source.is_a?(String)
 
     @digest = OpenSSL::Digest.new(options[:algorithm])
     @info = options[:info]
 
     salt = options[:salt]
     salt = 0.chr * @digest.digest_length if salt.nil? or salt.empty?
+    read_size = options[:read_size] || @digest.block_length
 
-    @prk = OpenSSL::HMAC.digest(@digest, salt, source)
+    @prk = _generate_prk(salt, source, read_size)
     @position = 0
     @blocks = []
     @blocks << ''
@@ -48,6 +51,14 @@ class HKDF
 
   def next_hex_bytes(length)
     next_bytes(length).unpack('H*').first
+  end
+
+  def _generate_prk(salt, source, read_size)
+    hmac = OpenSSL::HMAC.new(salt, @digest)
+    while block = source.read(read_size)
+      hmac.update(block)
+    end
+    hmac.digest
   end
 
   def _generate_blocks(length)
