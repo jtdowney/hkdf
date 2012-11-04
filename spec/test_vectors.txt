@@ -51,3 +51,12 @@ info   =
 L      = 42
 PRK    = 0xda8c8a73c7fa77288ec6f5e7c297786aa0d32d01
 OKM    = 0x0ac1af7002b3d761d1e55298da9d0506b9ae52057220a306e07b6b87e8df21d0ea00033de03984d34918
+
+Test with SHA-1, salt not provided (defaults to HashLen zero octets), zero-length info
+Hash   = SHA1
+IKM    = 0x0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c
+salt   =
+info   =
+L      = 42
+PRK    = 0x2adccada18779e7c2077ad2eb19d3f3e731385dd
+OKM    = 0x2c91117204d745f3500d636a62f64f0ab3bae548aa53d423b0d1f27ebba6f5e5673a081d70cce7acfc48
