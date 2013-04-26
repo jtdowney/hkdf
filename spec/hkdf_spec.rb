@@ -45,7 +45,7 @@ describe HKDF do
       @hkdf_salt.next_bytes(32) == @hkdf_nosalt.next_bytes(32)
     end
 
-    it 'sets salt to all zeros of digest 32 if empty' do
+    it 'sets salt to all zeros if empty' do
       @hkdf_blanksalt = HKDF.new(@source, :algorithm => @algorithm, :salt => '')
       @hkdf_nosalt = HKDF.new(@source, :algorithm => @algorithm)
       @hkdf_blanksalt.next_bytes(32) == @hkdf_nosalt.next_bytes(32)
