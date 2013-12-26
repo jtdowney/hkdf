@@ -67,7 +67,7 @@ describe HKDF do
   describe 'next_bytes' do
     it 'raises an error if requested size is > max_length' do
       expect { @hkdf.next_bytes(@hkdf.max_length + 1) }.to raise_error(RangeError, /requested \d+ bytes, only \d+ available/)
-      expect { @hkdf.next_bytes(@hkdf.max_length) }.to_not raise_error(RangeError)
+      expect { @hkdf.next_bytes(@hkdf.max_length) }.to_not raise_error
     end
 
     it 'raises an error if requested size + current position is > max_length' do
@@ -107,7 +107,7 @@ describe HKDF do
 
     it 'raises an error if requested to seek past end of stream' do
       expect { @hkdf.seek(@hkdf.max_length + 1) }.to raise_error(RangeError, /cannot seek past \d+/)
-      expect { @hkdf.seek(@hkdf.max_length) }.to_not raise_error(RangeError)
+      expect { @hkdf.seek(@hkdf.max_length) }.to_not raise_error
     end
   end
 
