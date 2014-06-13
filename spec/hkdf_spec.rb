@@ -11,12 +11,12 @@ describe HKDF do
     it 'accepts an IO or a string as a source' do
       output1 = HKDF.new(@source).next_bytes(32)
       output2 = HKDF.new(StringIO.new(@source)).next_bytes(32)
-      output1.should == output2
+      expect(output1).to eq(output2)
     end
 
     it 'reads in an IO at a given read size' do
       io = StringIO.new(@source)
-      io.should_receive(:read).with(1)
+      expect(io).to receive(:read).with(1)
 
       HKDF.new(io, :read_size => 1)
     end
@@ -25,16 +25,16 @@ describe HKDF do
       hkdf1 = HKDF.new(@source, :read_size => 1)
       hkdf2 = HKDF.new(@source)
 
-      hkdf1.next_bytes(32).should == hkdf2.next_bytes(32)
+      expect(hkdf1.next_bytes(32)).to eq(hkdf2.next_bytes(32))
     end
 
     it 'defaults the algorithm to SHA-256' do
-      HKDF.new(@source).algorithm.should == 'SHA256'
+      expect(HKDF.new(@source).algorithm).to eq('SHA256')
     end
 
     it 'takes an optional digest algorithm' do
       @hkdf = HKDF.new('source', :algorithm => 'SHA1')
-      @hkdf.algorithm.should == 'SHA1'
+      expect(@hkdf.algorithm).to eq('SHA1')
     end
 
     it 'defaults salt to all zeros of digest length' do
@@ -60,7 +60,7 @@ describe HKDF do
 
   describe 'max_length' do
     it 'is 255 times the digest length' do
-      @hkdf.max_length.should == 255 * 32
+      expect(@hkdf.max_length).to eq(255 * 32)
     end
   end
 
@@ -78,7 +78,7 @@ describe HKDF do
     end
 
     it 'advances the stream position' do
-      @hkdf.next_bytes(32).should_not == @hkdf.next_bytes(32)
+      expect(@hkdf.next_bytes(32)).not_to eq(@hkdf.next_bytes(32))
     end
 
     test_vectors.each do |name, options|
@@ -86,14 +86,14 @@ describe HKDF do
         options[:algorithm] = options[:Hash]
 
         hkdf = HKDF.new(options[:IKM], options)
-        hkdf.next_bytes(options[:L].to_i).should == options[:OKM]
+        expect(hkdf.next_bytes(options[:L].to_i)).to eq(options[:OKM])
       end
     end
   end
 
   describe 'next_hex_bytes' do
     it 'returns the next bytes as hex' do
-      @hkdf.next_hex_bytes(20).should == 'fb496612b8cb82cd2297770f83c72b377af16d7b'
+      expect(@hkdf.next_hex_bytes(20)).to eq('fb496612b8cb82cd2297770f83c72b377af16d7b')
     end
   end
 
@@ -102,7 +102,7 @@ describe HKDF do
       @hkdf.next_bytes(10)
       output = @hkdf.next_bytes(32)
       @hkdf.seek(10)
-      @hkdf.next_bytes(32).should == output
+      expect(@hkdf.next_bytes(32)).to eq(output)
     end
 
     it 'raises an error if requested to seek past end of stream' do
@@ -115,7 +115,7 @@ describe HKDF do
     it 'resets the stream position to the beginning' do
       output = @hkdf.next_bytes(32)
       @hkdf.rewind
-      @hkdf.next_bytes(32).should == output
+      expect(@hkdf.next_bytes(32)).to eq(output)
     end
   end
 end
