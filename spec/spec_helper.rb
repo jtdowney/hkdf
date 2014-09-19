@@ -5,19 +5,19 @@ RSpec.configure do |config|
 end
 
 def test_vectors
-  test_lines = File.readlines('spec/test_vectors.txt').map(&:strip).reject(&:empty?)
+  test_parts = File.readlines('spec/fixtures/test_vectors.txt').
+    map(&:strip).
+    reject(&:empty?).
+    each_slice(8)
 
-  vectors = {}
-  test_lines.each_slice(8) do |lines|
+  test_parts.reduce({}) do |vectors, lines|
     name = lines.shift
-    values = lines.inject({}) do |hash, line|
+    values = lines.reduce({}) do |hash, line|
       key, value = line.split('=').map(&:strip)
       value = '' unless value
       value = [value.slice(2..-1)].pack('H*') if value.start_with?('0x')
-      hash[key.to_sym] = value
-      hash
+      hash.merge(key.to_sym => value)
     end
-    vectors[name] = values
+    vectors.merge(name => values)
   end
-  vectors
 end
