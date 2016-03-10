@@ -12,8 +12,7 @@ Gem::Specification.new do |s|
   s.test_files    = Dir.glob('spec/**/*')
   s.require_paths = ['lib']
 
-  s.add_dependency 'jruby-openssl' if RUBY_PLATFORM == 'java'
   s.add_development_dependency 'bundler', '~> 1.0'
-  s.add_development_dependency 'rake', '10.3.2'
-  s.add_development_dependency 'rspec', '3.1.0'
+  s.add_development_dependency 'rake', '11.0.1'
+  s.add_development_dependency 'rspec', '3.4.0'
 end
