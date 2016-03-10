@@ -41,19 +41,19 @@ describe HKDF do
 
       hkdf_salt = HKDF.new(source, :salt => salt)
       hkdf_nosalt = HKDF.new(source)
-      hkdf_salt.next_bytes(32) == hkdf_nosalt.next_bytes(32)
+      expect(hkdf_salt.next_bytes(32)).to eq(hkdf_nosalt.next_bytes(32))
     end
 
     it 'sets salt to all zeros if empty' do
       hkdf_blanksalt = HKDF.new(source, :salt => '')
       hkdf_nosalt = HKDF.new(source)
-      hkdf_blanksalt.next_bytes(32) == hkdf_nosalt.next_bytes(32)
+      expect(hkdf_blanksalt.next_bytes(32)).to eq(hkdf_nosalt.next_bytes(32))
     end
 
     it 'defaults info to an empty string' do
       hkdf_info = HKDF.new(source, :info => '')
       hkdf_noinfo = HKDF.new(source)
-      hkdf_info.next_bytes(32) == hkdf_noinfo.next_bytes(32)
+      expect(hkdf_info.next_bytes(32)).to eq(hkdf_noinfo.next_bytes(32))
     end
   end
 
