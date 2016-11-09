@@ -122,4 +122,11 @@ describe HKDF do
       expect(hkdf.next_bytes(32)).to eq(output)
     end
   end
+
+  describe 'inspect' do
+    it 'returns minimal information' do
+      hkdf = HKDF.new('secret', info: 'public')
+      expect(hkdf.inspect).to match(/^#<HKDF:0x[\h]+ algorithm="SHA256" info="public">$/)
+    end
+  end
 end

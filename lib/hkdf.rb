@@ -56,6 +56,10 @@ class HKDF
     next_bytes(length).unpack('H*').first
   end
 
+  def inspect
+    "#{to_s[0..-2]} algorithm=#{@digest.name.inspect} info=#{@info.inspect}>"
+  end
+
   def _generate_prk(salt, source, read_size)
     hmac = OpenSSL::HMAC.new(salt, @digest)
     while block = source.read(read_size)
