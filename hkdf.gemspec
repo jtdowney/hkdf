@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'hkdf'
-  s.version     = '0.2.0'
+  s.version     = '0.3.0'
   s.authors     = ['John Downey']
   s.email       = ['jdowney@gmail.com']
   s.homepage    = 'http://github.com/jtdowney/hkdf'
