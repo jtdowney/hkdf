@@ -125,7 +125,7 @@ describe HKDF do
 
   describe 'inspect' do
     it 'returns minimal information' do
-      hkdf = HKDF.new('secret', info: 'public')
+      hkdf = HKDF.new('secret', :info => 'public')
       expect(hkdf.inspect).to match(/^#<HKDF:0x[\h]+ algorithm="SHA256" info="public">$/)
     end
   end
