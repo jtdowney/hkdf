@@ -4,19 +4,19 @@ require 'openssl'
 require 'stringio'
 
 class HKDF
-  DefaultAlgorithm = 'SHA256'
-  DefaultReadSize = 512 * 1024
+  DEFAULT_ALGOTIHM = 'SHA256'
+  DEFAULT_READ_SIZE = 512 * 1024
 
   def initialize(source, options = {})
     source = StringIO.new(source) if source.is_a?(String)
 
-    algorithm = options.fetch(:algorithm, DefaultAlgorithm)
+    algorithm = options.fetch(:algorithm, DEFAULT_ALGOTIHM)
     @digest = OpenSSL::Digest.new(algorithm)
     @info = options.fetch(:info, '')
 
     salt = options[:salt]
     salt = 0.chr * @digest.digest_length if salt.nil? || salt.empty?
-    read_size = options.fetch(:read_size, DefaultReadSize)
+    read_size = options.fetch(:read_size, DEFAULT_READ_SIZE)
 
     @prk = _generate_prk(salt, source, read_size)
     @position = 0
