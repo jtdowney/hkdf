@@ -18,10 +18,9 @@ class HKDF
     salt = 0.chr * @digest.digest_length if salt.nil? || salt.empty?
     read_size = options.fetch(:read_size, DEFAULT_READ_SIZE)
 
-    @prk = _generate_prk(salt, source, read_size)
+    @prk = generate_prk(salt, source, read_size)
     @position = 0
-    @blocks = []
-    @blocks << ''
+    @blocks = ['']
   end
 
   def algorithm
@@ -46,7 +45,7 @@ class HKDF
     new_position = length + @position
     raise RangeError, "requested #{length} bytes, only #{max_length} available" if new_position > max_length
 
-    _generate_blocks(new_position)
+    generate_blocks(new_position)
 
     start = @position
     @position = new_position
@@ -62,15 +61,17 @@ class HKDF
     "#{to_s[0..-2]} algorithm=#{@digest.name.inspect} info=#{@info.inspect}>"
   end
 
-  def _generate_prk(salt, source, read_size)
+  private
+
+  def generate_prk(salt, source, read_size)
     hmac = OpenSSL::HMAC.new(salt, @digest)
-    while block = source.read(read_size)
+    while (block = source.read(read_size))
       hmac.update(block)
     end
     hmac.digest
   end
 
-  def _generate_blocks(length)
+  def generate_blocks(length)
     start = @blocks.size
     block_count = (length.to_f / @digest.digest_length).ceil
     start.upto(block_count) do |n|
