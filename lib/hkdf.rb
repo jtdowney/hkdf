@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'openssl'
 require 'stringio'
 
@@ -13,7 +15,7 @@ class HKDF
     @info = options.fetch(:info, '')
 
     salt = options[:salt]
-    salt = 0.chr * @digest.digest_length if salt.nil? or salt.empty?
+    salt = 0.chr * @digest.digest_length if salt.nil? || salt.empty?
     read_size = options.fetch(:read_size, DefaultReadSize)
 
     @prk = _generate_prk(salt, source, read_size)
@@ -31,7 +33,7 @@ class HKDF
   end
 
   def seek(position)
-    raise RangeError.new("cannot seek past #{max_length}") if position > max_length
+    raise RangeError, "cannot seek past #{max_length}" if position > max_length
 
     @position = position
   end
@@ -42,7 +44,7 @@ class HKDF
 
   def next_bytes(length)
     new_position = length + @position
-    raise RangeError.new("requested #{length} bytes, only #{max_length} available") if new_position > max_length
+    raise RangeError, "requested #{length} bytes, only #{max_length} available" if new_position > max_length
 
     _generate_blocks(new_position)
 
@@ -53,7 +55,7 @@ class HKDF
   end
 
   def next_hex_bytes(length)
-    next_bytes(length).unpack('H*').first
+    next_bytes(length).unpack1('H*')
   end
 
   def inspect

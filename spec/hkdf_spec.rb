@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe HKDF do
@@ -17,11 +19,11 @@ describe HKDF do
       io = StringIO.new(source)
       expect(io).to receive(:read).with(1)
 
-      HKDF.new(io, :read_size => 1)
+      HKDF.new(io, read_size: 1)
     end
 
     it 'reads in the whole IO' do
-      hkdf1 = HKDF.new(source, :read_size => 1)
+      hkdf1 = HKDF.new(source, read_size: 1)
       hkdf2 = HKDF.new(source)
 
       expect(hkdf1.next_bytes(32)).to eq(hkdf2.next_bytes(32))
@@ -32,26 +34,26 @@ describe HKDF do
     end
 
     it 'takes an optional digest algorithm' do
-      hkdf = HKDF.new('source', :algorithm => 'SHA1')
+      hkdf = HKDF.new('source', algorithm: 'SHA1')
       expect(hkdf.algorithm).to eq('SHA1')
     end
 
     it 'defaults salt to all zeros of digest length' do
       salt = 0.chr * 32
 
-      hkdf_salt = HKDF.new(source, :salt => salt)
+      hkdf_salt = HKDF.new(source, salt: salt)
       hkdf_nosalt = HKDF.new(source)
       expect(hkdf_salt.next_bytes(32)).to eq(hkdf_nosalt.next_bytes(32))
     end
 
     it 'sets salt to all zeros if empty' do
-      hkdf_blanksalt = HKDF.new(source, :salt => '')
+      hkdf_blanksalt = HKDF.new(source, salt: '')
       hkdf_nosalt = HKDF.new(source)
       expect(hkdf_blanksalt.next_bytes(32)).to eq(hkdf_nosalt.next_bytes(32))
     end
 
     it 'defaults info to an empty string' do
-      hkdf_info = HKDF.new(source, :info => '')
+      hkdf_info = HKDF.new(source, info: '')
       hkdf_noinfo = HKDF.new(source)
       expect(hkdf_info.next_bytes(32)).to eq(hkdf_noinfo.next_bytes(32))
     end
@@ -125,7 +127,7 @@ describe HKDF do
 
   describe 'inspect' do
     it 'returns minimal information' do
-      hkdf = HKDF.new('secret', :info => 'public')
+      hkdf = HKDF.new('secret', info: 'public')
       expect(hkdf.inspect).to match(/^#<HKDF:0x[0-9a-f]+ algorithm="SHA256" info="public">$/)
     end
   end
