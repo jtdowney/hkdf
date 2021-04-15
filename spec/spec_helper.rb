@@ -6,6 +6,7 @@ RSpec.configure do |config|
   config.order = 'random'
 end
 
+# :nodoc:
 def test_vectors
   test_parts = File.readlines('spec/fixtures/test_vectors.txt')
                    .map(&:strip)

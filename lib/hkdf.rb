@@ -3,10 +3,20 @@
 require 'openssl'
 require 'stringio'
 
+# Provide HMAC-based Extract-and-Expand Key Derivation Function (HKDF) for Ruby.
 class HKDF
+  # Default hash algorithm to use for HMAC.
   DEFAULT_ALGOTIHM = 'SHA256'
+  # Default buffer size for reading source IO.
   DEFAULT_READ_SIZE = 512 * 1024
 
+  # Create a new HKDF instance with then provided +source+ key material.
+  #
+  # Options:
+  # - +algorithm:+ hash function to use (defaults to SHA-256)
+  # - +info:+ optional context and application specific information
+  # - +salt:+ optional salt value (a non-secret random value)
+  # - +read_size:+ buffer size when reading from a source IO
   def initialize(source, options = {})
     source = StringIO.new(source) if source.is_a?(String)
 
@@ -23,24 +33,30 @@ class HKDF
     @blocks = ['']
   end
 
+  # Returns the hash algorithm this instance was configured with.
   def algorithm
     @digest.name
   end
 
+  # Maximum length that can be derived per the RFC.
   def max_length
     @max_length ||= @digest.digest_length * 255
   end
 
+  # Adjust the reading position to an arbitrary offset. Will raise +RangeError+ if you attempt to seek longer than
+  # +#max_length+.
   def seek(position)
     raise RangeError, "cannot seek past #{max_length}" if position > max_length
 
     @position = position
   end
 
+  # Adjust reading position back to the beginning.
   def rewind
     seek(0)
   end
 
+  # Read the next +length+ bytes from the stream. Will raise +RangeError+ if you attempt to read beyond +#max_length+.
   def next_bytes(length)
     new_position = length + @position
     raise RangeError, "requested #{length} bytes, only #{max_length} available" if new_position > max_length
@@ -53,10 +69,13 @@ class HKDF
     @blocks.join('').slice(start, length)
   end
 
+  # Read the next +length+ bytes from the stream and return them hex encoded. Will raise +RangeError+ if you attempt to
+  # read beyond +#max_length+.
   def next_hex_bytes(length)
     next_bytes(length).unpack1('H*')
   end
 
+  # :nodoc:
   def inspect
     "#{to_s[0..-2]} algorithm=#{@digest.name.inspect} info=#{@info.inspect}>"
   end
