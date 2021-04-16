@@ -1,6 +1,7 @@
 # HKDF
 
 [![CI](https://github.com/jtdowney/hkdf/actions/workflows/ci.yml/badge.svg)](https://github.com/jtdowney/hkdf/actions/workflows/ci.yml)
+[![Gem Version](https://badge.fury.io/rb/hkdf.svg)](https://badge.fury.io/rb/hkdf)
 
 This is a ruby implementation of [RFC 5869](http://tools.ietf.org/html/rfc5869): HMAC-based Extract-and-Expand Key Derivation Function. The goal of HKDF is to take some source key material and generate suitable cryptographic keys from it.
 
