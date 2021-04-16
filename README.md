@@ -30,4 +30,4 @@ hkdf.read(32)
 
 ## Requirements
 
-* Ruby >= 2.4
+- Ruby >= 2.4
