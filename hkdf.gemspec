@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
+$LOAD_PATH.unshift File.expand_path("lib", __dir__)
+require "hkdf/version"
+
 Gem::Specification.new do |s|
   s.name        = "hkdf"
-  s.version     = "0.3.0"
+  s.version     = HKDF::VERSION
   s.authors     = ["John Downey"]
   s.email       = ["jdowney@gmail.com"]
   s.homepage    = "http://github.com/jtdowney/hkdf"
