@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require 'openssl'
-require 'stringio'
+require "openssl"
+require "stringio"
 
 # Provide HMAC-based Extract-and-Expand Key Derivation Function (HKDF) for Ruby.
 class HKDF
   # Default hash algorithm to use for HMAC.
-  DEFAULT_ALGOTIHM = 'SHA256'
+  DEFAULT_ALGOTIHM = "SHA256"
   # Default buffer size for reading source IO.
   DEFAULT_READ_SIZE = 512 * 1024
 
@@ -22,7 +22,7 @@ class HKDF
 
     algorithm = options.fetch(:algorithm, DEFAULT_ALGOTIHM)
     @digest = OpenSSL::Digest.new(algorithm)
-    @info = options.fetch(:info, '')
+    @info = options.fetch(:info, "")
 
     salt = options[:salt]
     salt = 0.chr * @digest.digest_length if salt.nil? || salt.empty?
@@ -30,7 +30,7 @@ class HKDF
 
     @prk = generate_prk(salt, source, read_size)
     @position = 0
-    @blocks = ['']
+    @blocks = [""]
   end
 
   # Returns the hash algorithm this instance was configured with.
@@ -66,13 +66,13 @@ class HKDF
     start = @position
     @position = new_position
 
-    @blocks.join('').slice(start, length)
+    @blocks.join.slice(start, length)
   end
 
   # Read the next +length+ bytes from the stream and return them hex encoded. Will raise +RangeError+ if you attempt to
   # read beyond +#max_length+.
   def next_hex_bytes(length)
-    next_bytes(length).unpack1('H*')
+    next_bytes(length).unpack1("H*")
   end
 
   # :nodoc:
