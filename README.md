@@ -27,3 +27,7 @@ hkdf = HKDF.new(File.new('/tmp/filename'), :read_size => 512)
 hkdf.next_bytes(32)
  => "\f#\xF4b\x98\x9B\x7Fw>|/|k\xF4k\xB7\xB9\x11e\xC5\x92\xD1\fH\xFDG\x94vt\xB4\x14\xCE"
 ```
+
+## Requirements
+
+* Ruby >= 2.4
