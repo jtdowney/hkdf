@@ -11,8 +11,8 @@ describe HKDF do
 
   describe "initialize" do
     it "accepts an IO or a string as a source" do
-      output1 = described_class.new(source).next_bytes(32)
-      output2 = described_class.new(StringIO.new(source)).next_bytes(32)
+      output1 = described_class.new(source).read(32)
+      output2 = described_class.new(StringIO.new(source)).read(32)
       expect(output1).to eq(output2)
     end
 
@@ -26,7 +26,7 @@ describe HKDF do
       hkdf1 = described_class.new(source, read_size: 1)
       hkdf2 = described_class.new(source)
 
-      expect(hkdf1.next_bytes(32)).to eq(hkdf2.next_bytes(32))
+      expect(hkdf1.read(32)).to eq(hkdf2.read(32))
     end
 
     it "defaults the algorithm to SHA-256" do
@@ -43,19 +43,19 @@ describe HKDF do
 
       hkdf_salt = described_class.new(source, salt: salt)
       hkdf_nosalt = described_class.new(source)
-      expect(hkdf_salt.next_bytes(32)).to eq(hkdf_nosalt.next_bytes(32))
+      expect(hkdf_salt.read(32)).to eq(hkdf_nosalt.read(32))
     end
 
     it "sets salt to all zeros if empty" do
       hkdf_blanksalt = described_class.new(source, salt: "")
       hkdf_nosalt = described_class.new(source)
-      expect(hkdf_blanksalt.next_bytes(32)).to eq(hkdf_nosalt.next_bytes(32))
+      expect(hkdf_blanksalt.read(32)).to eq(hkdf_nosalt.read(32))
     end
 
     it "defaults info to an empty string" do
       hkdf_info = described_class.new(source, info: "")
       hkdf_noinfo = described_class.new(source)
-      expect(hkdf_info.next_bytes(32)).to eq(hkdf_noinfo.next_bytes(32))
+      expect(hkdf_info.read(32)).to eq(hkdf_noinfo.read(32))
     end
   end
 
@@ -65,28 +65,28 @@ describe HKDF do
     end
   end
 
-  describe "next_bytes" do
+  describe "read" do
     it "does not raise if reading <= max_length" do
       expect do
-        hkdf.next_bytes(hkdf.max_length)
+        hkdf.read(hkdf.max_length)
       end.not_to raise_error
     end
 
     it "raises an error if requested size is > max_length" do
       expect do
-        hkdf.next_bytes(hkdf.max_length + 1)
+        hkdf.read(hkdf.max_length + 1)
       end.to raise_error(RangeError, /requested \d+ bytes, only \d+ available/)
     end
 
     it "raises an error if requested size + current position is > max_length" do
       expect do
-        hkdf.next_bytes(32)
-        hkdf.next_bytes(hkdf.max_length - 31)
+        hkdf.read(32)
+        hkdf.read(hkdf.max_length - 31)
       end.to raise_error(RangeError, /requested \d+ bytes, only \d+ available/)
     end
 
     it "advances the stream position" do
-      expect(hkdf.next_bytes(32)).not_to eq(hkdf.next_bytes(32))
+      expect(hkdf.read(32)).not_to eq(hkdf.read(32))
     end
 
     test_vectors.each do |name, options|
@@ -94,23 +94,23 @@ describe HKDF do
         options[:algorithm] = options[:Hash]
 
         hkdf = described_class.new(options[:IKM], options)
-        expect(hkdf.next_bytes(options[:L].to_i)).to eq(options[:OKM])
+        expect(hkdf.read(options[:L].to_i)).to eq(options[:OKM])
       end
     end
   end
 
-  describe "next_hex_bytes" do
+  describe "read_hex" do
     it "returns the next bytes as hex" do
-      expect(hkdf.next_hex_bytes(20)).to eq("fb496612b8cb82cd2297770f83c72b377af16d7b")
+      expect(hkdf.read_hex(20)).to eq("fb496612b8cb82cd2297770f83c72b377af16d7b")
     end
   end
 
   describe "seek" do
     it "sets the position anywhere in the stream" do
-      hkdf.next_bytes(10)
-      output = hkdf.next_bytes(32)
+      hkdf.read(10)
+      output = hkdf.read(32)
       hkdf.seek(10)
-      expect(hkdf.next_bytes(32)).to eq(output)
+      expect(hkdf.read(32)).to eq(output)
     end
 
     it "does not raise if <= max_length" do
@@ -124,9 +124,9 @@ describe HKDF do
 
   describe "rewind" do
     it "resets the stream position to the beginning" do
-      output = hkdf.next_bytes(32)
+      output = hkdf.read(32)
       hkdf.rewind
-      expect(hkdf.next_bytes(32)).to eq(output)
+      expect(hkdf.read(32)).to eq(output)
     end
   end
 

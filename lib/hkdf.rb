@@ -57,7 +57,7 @@ class HKDF
   end
 
   # Read the next +length+ bytes from the stream. Will raise +RangeError+ if you attempt to read beyond +#max_length+.
-  def next_bytes(length)
+  def read(length)
     new_position = length + @position
     raise RangeError, "requested #{length} bytes, only #{max_length} available" if new_position > max_length
 
@@ -71,8 +71,8 @@ class HKDF
 
   # Read the next +length+ bytes from the stream and return them hex encoded. Will raise +RangeError+ if you attempt to
   # read beyond +#max_length+.
-  def next_hex_bytes(length)
-    next_bytes(length).unpack1("H*")
+  def read_hex(length)
+    read(length).unpack1("H*")
   end
 
   # :nodoc:

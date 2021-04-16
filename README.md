@@ -8,7 +8,7 @@ This is a ruby implementation of [RFC 5869](http://tools.ietf.org/html/rfc5869):
 
 ```ruby
 hkdf = HKDF.new('source key material')
-hkdf.next_bytes(32)
+hkdf.read(32)
  => "\f#\xF4b\x98\x9B\x7Fw>|/|k\xF4k\xB7\xB9\x11e\xC5\x92\xD1\fH\xFDG\x94vt\xB4\x14\xCE"
 ```
 
@@ -16,7 +16,7 @@ The default algorithm is HMAC-SHA256, you can override this and other defaults b
 
 ```ruby
 hkdf = HKDF.new('source key material', :salt => 'NaCl', :algorithm => 'SHA1', :info => 'the 411')
-hkdf.next_bytes(16)
+hkdf.read(16)
  => "\xC0<\x13\x85\x8C\x84z\xCE\xC7\xCE+\xFF\x1C\xEB\xE6\xBC"
 ```
 
@@ -24,7 +24,7 @@ You can also give an IO object as the source. It will be read in as a stream to 
 
 ```ruby
 hkdf = HKDF.new(File.new('/tmp/filename'), :read_size => 512)
-hkdf.next_bytes(32)
+hkdf.read(32)
  => "\f#\xF4b\x98\x9B\x7Fw>|/|k\xF4k\xB7\xB9\x11e\xC5\x92\xD1\fH\xFDG\x94vt\xB4\x14\xCE"
 ```
 
