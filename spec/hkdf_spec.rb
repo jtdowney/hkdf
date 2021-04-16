@@ -89,7 +89,7 @@ describe HKDF do
       expect(hkdf.read(32)).not_to eq(hkdf.read(32))
     end
 
-    test_vectors.each do |name, options|
+    TestVectors.vectors.each do |name, options|
       it "matches output from the '#{name}' test vector" do
         options[:algorithm] = options[:Hash]
 
